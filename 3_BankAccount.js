@@ -15,7 +15,7 @@ class BankAccount {
         return `Не коректный, введите только число`;
       } else {
         this._initialBalance += amount;
-        return `Счет пополнен на ${amount}$, Баланс: ${this._initialBalance}$`;
+        return `Счет пополнен на ${amount}$, Балансdadsf: ${this._initialBalance}$`;
       }
     }
   }
