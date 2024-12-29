@@ -45,9 +45,11 @@ getBalance() для получения текущего баланса. Учти
    - Хранит массив транзакций.
 
 2. Класс `InvestmentAccount`, унаследованный от `BankAccount`:
+
    - Добавляет возможность инвестировать деньги в акции. 
+   
    - Методы:
-     - investInStock(stockName, amount, password) - инвестирует деньги в акции.
+     -  (stockName, amount, password) - инвестирует деньги в акции.
 
      - withdrawInvestment(stockName, amount, password) - снимает деньги с инвестиций.
 

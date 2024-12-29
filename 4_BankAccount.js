@@ -1,122 +1,68 @@
 class BankAccount {
-  constructor({ name, initialBalance, password }) {
-    this._name = name;
-    this._initialBalance = initialBalance;
-    this._password = password;
-    this._historyTransiction = [];
-  }
-
-  get name() {
-    return this._name;
-  }
-
-  get balance() {
-    return this._initialBalance;
-  }
-
-  get password() {
-    return this._password;
-  }
-
-  get getTransiction() {
-    return this._historyTransiction;
+  constructor(name, balance, password) {
+    this.name = name;
+    this.balance = balance;
+    this.password = password;
+    this.transactions = [];
   }
 
   deposit(amount, password) {
-    if (password !== this._password) {
-      throw new Error("Пароль не верный, проверьте и попробуйте сново");
-    } else if (amount <= 0) {
-      return `Сумма должна быть положительное, вы ввели сумма ${amount}$`;
-    } else {
-      this._initialBalance += amount;
-
-      this._historyTransiction.push({
-        type: "Депозить",
-        amount: amount,
-        date: new Date(),
-      });
-
-      return `Пополнен счен на ${amount}$ Ваш новый баланс: ${this._initialBalance}$`;
+    if (password !== this.password) {
+      throw new Error("Неверный пароль");
     }
+    if (amount <= 0) {
+      throw new Error("Сумма депозита должна быть положительной");
+    }
+    this.balance += amount;
+    this.transactions.push({ type: "Депозит", amount, date: new Date() });
+    return `Успешно пополняли счет. Ваш баланс: ${this.balance}$`;
   }
 
   withdraw(amount, password) {
-    if (password !== this._password) {
-      throw new Error("Пароль не верный, проверьте и попробуйте сново");
-    } else {
-      if (amount > this._initialBalance) {
-        return `Не достатночное средства на вашем счете. Ваш баланс: ${this._initialBalance}$`;
-      } else {
-        this._initialBalance -= amount;
-
-        this._historyTransiction.push({
-          type: "Снять денег",
-          amount: amount,
-          date: new Date(),
-        });
-
-        return `Снято денег с вашего счета ${amount}$. Ваш новый баланс: ${this._initialBalance}$`;
-      }
+    if (password !== this.password) {
+      throw new Error("Пароль неверный");
     }
+
+    if (amount > this.balance) {
+      throw new Error("Недостаточно средств на баланс");
+    }
+
+    if (amount <= 0) {
+      throw new Error("Сумма снятия должна быть положительной");
+    }
+
+    this.balance -= amount;
+    this.transactions.push({ type: "Снятия денег", amount, date: new Date() });
+    return `Успешно сняли денег. Ваш баланс: ${this.balance}$`;
   }
 
   getBalance(password) {
-    if (password !== this._password) {
-      throw new Error("Пароль не верный, проверьте и попробуйте сново");
-    } else {
-      return `Ваш текущий баланс ${this._initialBalance}$`;
+    if (password !== this.password) {
+      throw new Error("Неверный пароль");
     }
+
+    return `Ваш баланс: ${this.balance}$`;
   }
 
   changePassword(oldPassword, newPassword) {
-    if (oldPassword !== this._password) {
-      throw new Error("Пароль не верный, проверьте и попробуйте сново");
-    } else {
-      oldPassword = null;
-
-      this._historyTransiction.push({
-        type: "Именение пароль",
-        newPassword: newPassword,
-        date: new Date(),
-      });
-      this._password = newPassword;
-      return `Пароль изменень ваш новый пароль: ${newPassword}`;
+    if (oldPassword !== this.password) {
+      throw new Error("Неверный пароль");
     }
+
+    if (newPassword.length < 6) {
+      throw new Error("Новый пароль должен быть не менее 6 символов");
+    }
+
+    this.password = newPassword;
+    return `Пароль успешно изменен. Ваш новый пароль ${newPassword}`;
   }
 
   getTransactionHistory(password) {
-    if (password !== this._password) {
-      throw new Error("Пароль не верный, проверьте и попробуйте сново");
-    } else {
-      let historyTransiction = "";
-      console.log("---------------Ваша история---------------");
-      this._historyTransiction.forEach((history) => {
-        if (history.type === "Депозить") {
-          historyTransiction += `
-
-Вы совершили: ${history.type}
-Попольнение счета: ${history.amount}$
-Дата и время: ${history.date}
-          `;
-        } else if (history.type === "Снять денег") {
-          historyTransiction += `
-
-Вы совершили: ${history.type}
-Cнято со счета: ${history.amount}$
-Дата и время: ${history.date}
-          `;
-        } else if (history.type === "Именение пароль") {
-          historyTransiction += `
-
-Вы совершили ${history.type}
-Вы изменили пароль на: ${history.newPassword}
-Дата и время: ${history.date}
-                    `;
-        }
-      });
-
-      return historyTransiction;
+    if (password !== this.password) {
+      throw new Error("Пароль не ваный");
     }
+    return this.transactions;
   }
 }
+
 module.exports = BankAccount;

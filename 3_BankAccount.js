@@ -21,7 +21,7 @@ class BankAccount {
   }
   withdrawv(amount, password) {
     if (password !== this._password) {
-      return "Не варный пароль, проверте и попробуйте сново";
+      return "Не верный пароль, проверте и попробуйте сново";
     } else {
       if (amount > this._initialBalance) {
         return `Не достаточное средсто на счете. Ваш баланс: ${this._initialBalance}$`;

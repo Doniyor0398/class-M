@@ -1,80 +1,45 @@
 const BankAccount = require("./4_BankAccount");
 
 class InvestmentAccount extends BankAccount {
-  constructor({ name, initialBalance, password }, investBalance) {
-    super({ name, initialBalance, password });
-    this._investBalance = investBalance;
-    this._historyTransiction = [];
+  constructor(name, balance, password) {
+    super(name, balance, password);
+    this.historyInvestment = {};
   }
-
-  get investBalance() {
-    return this._investBalance;
-  }
-
   investInStock(stockName, amount, password) {
-    if (password !== this._password) {
-      throw new Error("Пароль неверный. Проверьте и попробуйте заново.");
-    } else {
-      this._investBalance += amount;
-      this._initialBalance -= amount;
-
-      this._historyTransiction.push({
-        type: "Вложение в акции",
-        amount: amount,
-        date: new Date(),
-      });
-
-      return `
-Вы вложили 20$ в акцию ${stockName}. Ваш текущий баланс: 20$.
-Баланс на вашем банковском счете: 80$.
-      `;
+    if (password !== this.password) {
+      throw new Error("Не верный пароль");
     }
+
+    if (amount > this.balance) {
+      throw new Error("Не достаточно средств для инвестирование");
+    }
+
+    if (amount <= 0) {
+      throw new Error("Сумма инвестиция должна быть больше нуля");
+    }
+
+    this.balance -= amount;
+
+    if (!this.historyInvestment[stockName]) {
+      this.historyInvestment[stockName] = 0;
+    }
+
+    this.historyInvestment[stockName] += amount;
+
+    this.transactions.push({
+      type: "Инвестиция",
+      stockName,
+      amount,
+      date: new Date(),
+    });
+    return this.historyInvestment;
   }
 
-  withdrawInvestment(stockName, amount, password) {
-    if (password !== this._password) {
-      throw new Error("Пароль неверный. Проверьте и попробуйте заново.");
-    } else {
-      this._investBalance -= amount;
-
-      this._historyTransiction.push({
-        type: "Снять деньги с акции",
-        amount: amount,
-        date: new Date(),
-      });
-      return `Вы сняли деньги с акции ${stockName} в сумме: ${amount}$. Ваш текущий баланс: ${this._investBalance}$`;
+  getTransactionHistory(password) {
+    if (password !== this.password) {
+      throw new Error("Пароль не ваный");
     }
-  }
-  getInvestHistory(password) {
-    if (password !== this._password) {
-      throw new Error("Пароль не верный, проверьте и попробуйте сново");
-    } else {
-      let historyTransiction = "";
-      console.log("---------------Ваша история---------------");
-      this._historyTransiction.forEach((history) => {
-        if (history.type === "Вложение в акции") {
-          historyTransiction += `
-
-Вы совершили: ${history.type}
-Попольнение счета: ${history.amount}$
-Дата и время: ${history.date}
-          `;
-        } else if (history.type === "Снять деньги с акции") {
-          historyTransiction += `
-
-Вы совершили: ${history.type}
-Cнято со счета: ${history.amount}$
-Дата и время: ${history.date}
-          `;
-        }
-      });
-
-      return historyTransiction;
-    }
-  }
-
-  getInvestmentValue(stockName) {
-    return `Стоимость текущих инвестиций в ${stockName} составляет ${this._investBalance}$`;
+    return this.transactions;
   }
 }
 
